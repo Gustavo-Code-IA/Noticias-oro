@@ -6,6 +6,7 @@ def synthesize_text(text: str, out_path='media/audio.wav') -> str:
     # For now create a silent placeholder using pydub if available
     try:
         from pydub import AudioSegment
+        # create 1 second silence as placeholder, real TTS should replace this
         silent = AudioSegment.silent(duration=1000)
         silent.export(out_path, format='wav')
     except Exception:
