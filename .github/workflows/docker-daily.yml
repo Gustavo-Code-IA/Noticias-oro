@@ -1,0 +1,38 @@
+name: Daily Run (Docker)
+
+on:
+  schedule:
+    # Ajusta este cron a la hora que prefieras (UTC)
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t noticias-oro:latest .
+
+      - name: Run container
+        env:
+          NEWS_RSS_URLS: ${{ secrets.NEWS_RSS_URLS }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          USE_OPENAI_IMPACT: ${{ secrets.USE_OPENAI_IMPACT }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          OPENAI_TIMEOUT: ${{ secrets.OPENAI_TIMEOUT }}
+          POST_HOUR: ${{ secrets.POST_HOUR }}
+          POST_MINUTE: ${{ secrets.POST_MINUTE }}
+        run: |
+          docker run --rm \
+            -e NEWS_RSS_URLS="$NEWS_RSS_URLS" \
+            -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+            -e USE_OPENAI_IMPACT="$USE_OPENAI_IMPACT" \
+            -e OPENAI_MODEL="$OPENAI_MODEL" \
+            -e OPENAI_TIMEOUT="$OPENAI_TIMEOUT" \
+            -e POST_HOUR="$POST_HOUR" \
+            -e POST_MINUTE="$POST_MINUTE" \
+            noticias-oro:latest
