@@ -90,6 +90,14 @@ def process_and_store(urls: List[str], db_path: Optional[str] = None) -> List[Di
     added = []
     for it in items:
         if store.save(it):
+            # crear embedding para el artículo guardado
+            try:
+                from services.embeddings import get_default_store
+                es = get_default_store()
+                text = (it.get('title') or '') + '\n' + (it.get('summary') or '')
+                es.add(it['guid_hash'], text, metadata={'link': it.get('link')})
+            except Exception:
+                pass
             added.append(it)
     return added
 
