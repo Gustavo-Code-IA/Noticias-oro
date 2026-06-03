@@ -17,3 +17,5 @@ facebook-sdk
 openai
 elevenlabs
 pytest
+google-auth-oauthlib
+google-auth-httplib2
