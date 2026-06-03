@@ -1,3 +1,21 @@
+# Canal de noticias sobre trading de oro
+
+Este repositorio contiene agentes que automatizan la búsqueda de noticias relevantes sobre el oro, analizan su impacto, generan un video con imágenes y voz, y lo publican automáticamente.
+
+Estructura:
+- `agents/`: agentes principales (scraper, analyzer, media, tts, publisher)
+- `services/`: integraciones con APIs externas
+- `media/`: archivos multimedia generados
+- `data/`: base de datos y embeddings
+- `scripts/`: runners y utilidades
+
+Comandos iniciales:
+```bash
+python -m venv .venv
+source .venv/bin/activate  # o .venv\Scripts\Activate.ps1 en Windows PowerShell
+pip install -r requirements.txt
+python scripts/run_daily.py  # prueba local
+```
 # Copilot Atlas
 
 A multi-agent orchestration system for VS Code Copilot that enables complex software development workflows through intelligent agent delegation and parallel execution.
