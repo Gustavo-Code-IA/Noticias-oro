@@ -16,3 +16,4 @@ tweepy
 facebook-sdk
 openai
 elevenlabs
+pytest

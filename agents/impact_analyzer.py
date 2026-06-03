@@ -39,6 +39,7 @@ def _openai_classify(text: str) -> Tuple[str, str]:
     if not api_key:
         raise RuntimeError('OPENAI_API_KEY not set')
     openai.api_key = api_key
+    timeout = int(os.getenv('OPENAI_TIMEOUT', '10'))
     prompt = (
         "Clasifica el siguiente texto según el impacto que tendría sobre el precio del oro como activo refugio: "
         "Responde solo con una palabra: low, medium o high. Después de la palabra, opcionalmente indica en una frase corta la razón.\n\n"
@@ -48,7 +49,8 @@ def _openai_classify(text: str) -> Tuple[str, str]:
         resp = openai.ChatCompletion.create(
             model=os.getenv('OPENAI_MODEL', 'gpt-3.5-turbo'),
             messages=[{"role": "user", "content": prompt}],
-            temperature=0
+            temperature=0,
+            timeout=timeout
         )
         out = resp.choices[0].message.content.strip()
         # normalize
@@ -63,7 +65,7 @@ def _openai_classify(text: str) -> Tuple[str, str]:
             return 'medium', out
         return 'low', out
     except Exception as e:
-        logger.exception('OpenAI classification failed')
+        logger.exception('OpenAI classification failed: %s', e)
         raise
 
 
