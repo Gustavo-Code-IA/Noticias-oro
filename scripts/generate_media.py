@@ -4,6 +4,8 @@ from hashlib import sha256
 from agents.media_generator import generate_media_for_text
 from agents.tts_agent import synthesize_text
 from services.unsplash import search_images
+from agents import publisher
+import os
 
 
 def _latest_article(db_path='data/articles.db'):
@@ -54,6 +56,21 @@ def main():
     out_path = os.path.join(out_dir, f"{_slug(title)}.mp4")
     video = generate_media_for_text(title, text, images, out_path, synthesize_text)
     print('Video generated:', video)
+
+    # publicar automáticamente si está habilitado
+    try:
+        publish_flag = os.environ.get('PUBLISH_TO_YOUTUBE', 'false').lower() in ('1', 'true', 'yes')
+        if publish_flag:
+            print('Publishing to YouTube...')
+            # description: usar título + texto
+            desc = f"{title}\n\nResumen:\n{(text or '')}\n"
+            try:
+                resp = publisher.upload_to_youtube(video, title, desc)
+                print('YouTube response:', resp)
+            except Exception as e:
+                print('Failed to publish to YouTube:', e)
+    except Exception:
+        pass
 
 
 if __name__ == '__main__':

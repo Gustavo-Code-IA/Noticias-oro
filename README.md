@@ -489,6 +489,30 @@ Add an entry to the README's Specialized Subagents section describing when to us
 - **Documentation-Writer**: Generates comprehensive docs from code
 - **Migration-Expert**: Handles database migrations, version upgrades, refactoring
 
+## Publicación automática (YouTube)
+
+Para habilitar la publicación automática a YouTube desde `scripts/generate_media.py`:
+
+1. Crear credenciales OAuth en Google Cloud Console (tipo "Desktop"/"Installed app") y descargar el JSON a `client_secrets.json`.
+2. En la primera ejecución local, ejecuta `python scripts/generate_media.py` y sigue el flujo OAuth en consola. Se guardará `youtube_credentials.json`.
+3. Para automatizar en GitHub Actions, añade los secretos en el repositorio:
+  - `YOUTUBE_CLIENT_SECRETS`: contenido de `client_secrets.json` (JSON)
+  - `YOUTUBE_CREDENTIALS`: contenido de `youtube_credentials.json` (JSON) — opcional si ya guardaste el token
+
+El workflow `.github/workflows/daily_publish.yml` escribirá esos secretos en `client_secrets.json` y `youtube_credentials.json` y ejecutará `scripts/generate_media.py` con la variable de entorno `PUBLISH_TO_YOUTUBE=true`.
+
+Advertencia: almacenar credenciales en secretos es más seguro que en el repo, pero revisa permisos y rotación de credenciales.
+
+Si prefieres no usar GitHub Actions, ejecuta localmente:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+setx PUBLISH_TO_YOUTUBE true
+python scripts/generate_media.py
+```
+
 ## License
 
 MIT License
